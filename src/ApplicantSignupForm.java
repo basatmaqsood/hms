@@ -1,6 +1,7 @@
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,13 +19,15 @@ public class ApplicantSignupForm extends VBox {
     private TextField skillsField;
     private Button signupButton;
     private Connection connection;
+    private Stage primaryStage;
     String profilePicPath;
     String cvPath;
 
 
-    public ApplicantSignupForm(Connection connection) {
-        this.connection = connection;
 
+    public ApplicantSignupForm(Connection connection, Stage primaryStage) {
+        this.connection = connection;
+        this.primaryStage = primaryStage;
         // Fields specific to Applicant
         Label nameLabel = new Label("Name:");
         nameField = new TextField();
@@ -133,6 +136,9 @@ public class ApplicantSignupForm extends VBox {
                 if (rowsInserted > 0) {
                     // Insertion successful
                     System.out.println("Applicant signup successful!");
+                    this.getChildren().clear();
+                    this.getChildren().addAll(new ApplicantLoginForm(connection,primaryStage));
+
                 } else {
                     // Insertion failed
                     System.out.println("Applicant signup failed. Please try again.");

@@ -20,8 +20,8 @@ public class Main extends Application {
             Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             // Create login forms
-            ApplicantLoginForm applicantLoginForm = new ApplicantLoginForm(connection);
-            CompanyLoginForm companyLoginForm = new CompanyLoginForm(connection);
+            ApplicantLoginForm applicantLoginForm = new ApplicantLoginForm(connection,primaryStage);
+            CompanyLoginForm companyLoginForm = new CompanyLoginForm(connection,primaryStage);
 
             // Create signup forms
 

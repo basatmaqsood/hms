@@ -1,5 +1,8 @@
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
 import java.sql.*;
 
 public class CompanyLoginForm extends VBox {
@@ -9,10 +12,12 @@ public class CompanyLoginForm extends VBox {
     private Button signupToggleButton; // Toggle between login and signup forms
     private Connection connection;
     private CompanySignupForm companySignupForm;
+    private Stage primaryStage;
 
-    public CompanyLoginForm(Connection connection) {
+    public CompanyLoginForm(Connection connection, Stage primaryStage) {
         this.connection = connection;
-        this.companySignupForm = new CompanySignupForm(this.connection);
+        this.primaryStage = primaryStage;
+        this.companySignupForm = new CompanySignupForm(connection, primaryStage);
 
         Label emailLabel = new Label("Email:");
         emailField = new TextField();
@@ -53,6 +58,8 @@ public class CompanyLoginForm extends VBox {
                     // User authenticated
                     // You can add code here to navigate to the appropriate view
                     System.out.println("Company login successful!");
+                    primaryStage.setTitle("Company Dashboard");
+                    primaryStage.setScene(new Scene(new CompanyView(connection)));
                 } else {
                     // User not found or invalid credentials
                     System.out.println("Invalid email or password. Please try again.");

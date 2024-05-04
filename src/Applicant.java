@@ -1,19 +1,20 @@
 import java.sql.*;
 
+import javafx.scene.control.SelectionModel;
+
 public class Applicant {
     private int applicantId;
     private String name;
     private String email;
     private String password;
-    private byte[] profilePicture;
+    private String profilePicture;
     private String phone;
     private String skills;
-    private byte[] CV;
+    private String CV;
 
-    public Applicant(String name, String email, String password, String phone, String skills, byte[] profilePicture, byte[] CV) {
+    public Applicant(String name, String email, String phone, String skills, String profilePicture, String CV) {
         this.name = name;
         this.email = email;
-        this.password = password;
         this.phone = phone;
         this.skills = skills;
         this.profilePicture = profilePicture;
@@ -21,6 +22,8 @@ public class Applicant {
     }
 
     // Getters and setters
+
+
 
     public void signup(Connection connection) throws SQLException {
         String sql = "INSERT INTO Applicant (applicant_id, name, email, password, phone, skills, profile_picture, CV) VALUES (applicant_seq.nextval, ?, ?, ?, ?, ?, ?, ?)";
@@ -30,8 +33,8 @@ public class Applicant {
             pstmt.setString(3, password);
             pstmt.setString(4, phone);
             pstmt.setString(5, skills);
-            pstmt.setBytes(6, profilePicture);
-            pstmt.setBytes(7, CV);
+            pstmt.setString(6, profilePicture);
+            pstmt.setString(7, CV);
             pstmt.executeUpdate();
         }
     }
@@ -62,5 +65,29 @@ public class Applicant {
     }
     public int getApplicantId() {
         return applicantId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public Object getProfilePicture() {
+        return profilePicture;
+    }
+
+    public SelectionModel<JobPosting> getCv() {
+        return null;    
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }
