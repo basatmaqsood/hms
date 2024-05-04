@@ -49,17 +49,19 @@ public class CompanyLoginForm extends VBox {
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setString(1, email);
                 statement.setString(2, password);
+                
 
                 // Execute query
                 ResultSet resultSet = statement.executeQuery();
-
+                
                 // Check if user exists
                 if (resultSet.next()) {
                     // User authenticated
                     // You can add code here to navigate to the appropriate view
+                    String companyId =  resultSet.getString("company_id");
                     System.out.println("Company login successful!");
                     primaryStage.setTitle("Company Dashboard");
-                    primaryStage.setScene(new Scene(new CompanyView(connection)));
+                    primaryStage.setScene(new Scene(new CompanyView(connection, companyId)));
                 } else {
                     // User not found or invalid credentials
                     System.out.println("Invalid email or password. Please try again.");

@@ -10,12 +10,78 @@ public class CompanyView extends VBox {
     private Connection connection;
     private ListView<JobPosting> jobPostingListView;
     private ListView<Applicant> applicantListView;
+    private TextField titleField;
+    private TextArea descriptionArea;
+    private TextField requirementsField;
+    private DatePicker deadlinePicker;
+    private Button postButton;
+    private String companyId;
+  
 
-    public CompanyView(Connection connection) {
+    public CompanyView(Connection connection,String companyId) {
         this.connection = connection;
+        this.companyId = companyId;
         jobPostingListView = new ListView<>();
         applicantListView = new ListView<>();
 
+                // Create form components for posting a job
+                Label titleLabel = new Label("Title:");
+                titleField = new TextField();
+        
+                Label descriptionLabel = new Label("Description:");
+                descriptionArea = new TextArea();
+        
+                Label requirementsLabel = new Label("Requirements:");
+                requirementsField = new TextField();
+        
+                Label deadlineLabel = new Label("Deadline:");
+                deadlinePicker = new DatePicker();
+        
+                postButton = new Button("Post Job");
+                postButton.setOnAction(event -> postJob());
+                Label jobPostingLabel = new Label("Job Postings");
+                Label applicantLabel = new Label("Applicants");
+        
+                // Add job posting form components to the layout
+                getChildren().addAll(jobPostingLabel, jobPostingListView, applicantListView,
+                        titleLabel, titleField, descriptionLabel, descriptionArea,
+                        requirementsLabel, requirementsField, deadlineLabel, deadlinePicker, postButton);
+        
+                // Other initialization code...
+            }
+        
+            private void postJob() {
+                String title = titleField.getText();
+                String description = descriptionArea.getText();
+                String requirements = requirementsField.getText();
+                String deadline = deadlinePicker.getValue().toString();
+            ;
+        
+                // Insert the job posting into the database
+                try {
+                    PreparedStatement statement = connection.prepareStatement(
+                            "INSERT INTO Job (posting_id, title, description, requirements, deadline, company_id) " +
+                                    "VALUES (job_seq.nextval, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?)");
+                    statement.setString(1, title);
+                    statement.setString(2, description);
+                    statement.setString(3, requirements);
+                    statement.setString(4, deadline);
+                    statement.setString(5, companyId);
+        
+                    int rowsInserted = statement.executeUpdate();
+        
+                    if (rowsInserted > 0) {
+                        System.out.println("Job posted successfully!");
+                        // Optionally, you can update the job postings list view here
+                    } else {
+                        System.out.println("Failed to post job.");
+                    }
+        
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            
         // Load job postings and applicants from the database
         loadJobPostings();
         loadApplicants();
