@@ -24,6 +24,7 @@ public class CompanyView extends VBox {
         applicantListView = new ListView<>();
         loadJobPostings();
         loadApplicants();
+        displayApplicantsForJob(null);
                 // Create form components for posting a job
                 Label titleLabel = new Label("Title:");
                 titleField = new TextField();

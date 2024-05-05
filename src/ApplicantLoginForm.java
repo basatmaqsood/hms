@@ -58,7 +58,8 @@ public class ApplicantLoginForm extends VBox {
                     // User authenticated
                     // You can add code here to navigate to the appropriate view
                     System.out.println("Applicant login successful!");
-                    ApplicantView applicantView = new ApplicantView();
+                    String applicantId =  resultSet.getString("applicant_id");
+                    ApplicantView applicantView = new ApplicantView(connection,applicantId);
                     primaryStage.setTitle("Applicant Dashboard");
                     primaryStage.setScene(new Scene(applicantView, 800, 600));
 
