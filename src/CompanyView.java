@@ -1,6 +1,5 @@
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -23,7 +22,8 @@ public class CompanyView extends VBox {
         this.companyId = companyId;
         jobPostingListView = new ListView<>();
         applicantListView = new ListView<>();
-
+        loadJobPostings();
+        loadApplicants();
                 // Create form components for posting a job
                 Label titleLabel = new Label("Title:");
                 titleField = new TextField();
@@ -40,7 +40,7 @@ public class CompanyView extends VBox {
                 postButton = new Button("Post Job");
                 postButton.setOnAction(event -> postJob());
                 Label jobPostingLabel = new Label("Job Postings");
-                Label applicantLabel = new Label("Applicants");
+                // Label applicantLabel = new Label("Applicants");
         
                 // Add job posting form components to the layout
                 getChildren().addAll(jobPostingLabel, jobPostingListView, applicantListView,
@@ -51,6 +51,7 @@ public class CompanyView extends VBox {
             }
         
             private void postJob() {
+
                 String title = titleField.getText();
                 String description = descriptionArea.getText();
                 String requirements = requirementsField.getText();
@@ -72,9 +73,12 @@ public class CompanyView extends VBox {
         
                     if (rowsInserted > 0) {
                         System.out.println("Job posted successfully!");
+                        showAlert("Success", "Job posted successfully!");
                         // Optionally, you can update the job postings list view here
                     } else {
                         System.out.println("Failed to post job.");
+                        showAlert("Failure", "There was error posting the job.");
+
                     }
         
                     statement.close();
@@ -83,8 +87,7 @@ public class CompanyView extends VBox {
                 }
             
         // Load job postings and applicants from the database
-        loadJobPostings();
-        loadApplicants();
+
 
         // Set up UI components
         Label jobPostingLabel = new Label("Job Postings");
@@ -164,7 +167,7 @@ private void loadApplicants() {
     }
 }
 
-    /* private void displayApplicantsForJob(JobPosting jobPosting) {
+     private void displayApplicantsForJob(JobPosting jobPosting) {
         try {
             // Clear previous applicants from the ListView
             applicantListView.getItems().clear();
@@ -203,9 +206,9 @@ private void loadApplicants() {
             e.printStackTrace();
         }
     }
-    */
+    
 
-    @SuppressWarnings("unchecked")
+
     private void displayApplicantDetails(Applicant applicant) {
         // Clear previous details from the details area
         GridPane applicantDetailsPane = new GridPane();
@@ -218,14 +221,15 @@ private void loadApplicants() {
         applicantDetailsPane.addRow(2, new Label("Phone:"), new Label(applicant.getPhone()));
         applicantDetailsPane.addRow(3, new Label("Skills:"), new Label(applicant.getSkills()));
 
-        // Create a separate section for profile picture and CV if needed
-        // For example:
-        // applicantDetailsPane.addRow(4, new Label("Profile Picture:"), new ImageView(new Image(applicant.getProfilePicture())));
-        // applicantDetailsPane.addRow(5, new Label("CV:"), new Hyperlink("View CV"));
 
-        // Clear the previous details and add the new details pane
         getChildren().remove(applicantDetailsPane);
         getChildren().add(applicantDetailsPane);
     }
-    
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
