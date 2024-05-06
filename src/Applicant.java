@@ -90,4 +90,8 @@ public class Applicant {
     public String getPhone() {
         return phone;
     }
+    @Override
+    public String toString(){
+        return name;
+    }
 }

@@ -12,6 +12,10 @@ public class JobPosting {
         this.deadline = deadline;
         this.jobid = jobid;
     }
+    @Override
+    public String toString() {
+        return title;
+    }
 
     public String getId() {
         return jobid;
