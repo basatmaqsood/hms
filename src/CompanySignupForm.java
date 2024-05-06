@@ -1,3 +1,5 @@
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -36,6 +38,13 @@ public class CompanySignupForm extends VBox {
         descriptionArea = new TextArea();
 
         signupButton = new Button("Signup");
+
+        // Set styles
+        setSpacing(10);
+        setAlignment(Pos.CENTER);
+
+        // Add some gap between description box and signup button
+        VBox.setMargin(signupButton, new Insets(10, 0, 0, 0));
 
         this.getChildren().addAll(
                 nameLabel, nameField,

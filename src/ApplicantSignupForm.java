@@ -1,3 +1,5 @@
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -23,11 +25,11 @@ public class ApplicantSignupForm extends VBox {
     String profilePicPath;
     String cvPath;
 
-
-
     public ApplicantSignupForm(Connection connection, Stage primaryStage) {
         this.connection = connection;
         this.primaryStage = primaryStage;
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(10); // Set spacing between child nodes
         // Fields specific to Applicant
         Label nameLabel = new Label("Name:");
         nameField = new TextField();
@@ -46,6 +48,13 @@ public class ApplicantSignupForm extends VBox {
 
         Label profilePicLabel = new Label("Profile Picture:");
         Button profilePicButton = new Button("Upload Profile Picture");
+        profilePicButton.getStyleClass().add("button");
+        nameLabel.getStyleClass().add("label");
+        nameField.getStyleClass().add("text-field");
+        emailLabel.getStyleClass().add("label");
+        emailField.getStyleClass().add("text-field");
+        // Add styles to other form elements similarly
+
         profilePicButton.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Profile Picture");
@@ -72,6 +81,9 @@ public class ApplicantSignupForm extends VBox {
 
         signupButton = new Button("Signup");
 
+        // Add margin between "Upload CV" button and "Signup" button
+        VBox.setMargin(signupButton, new Insets(10, 0, 0, 0)); // Insets(top, right, bottom, left)
+
         this.getChildren().addAll(
                 nameLabel, nameField,
                 emailLabel, emailField,
@@ -95,8 +107,6 @@ public class ApplicantSignupForm extends VBox {
             String skills = skillsField.getText();
             UUID numericUUID = UUID.randomUUID();
             String applicantId = new BigInteger(numericUUID.toString().replaceAll("-", ""), 16).toString();
-
-
 
             try {
                 // Prepare SQL statement
@@ -126,8 +136,6 @@ public class ApplicantSignupForm extends VBox {
                     e.printStackTrace();
                 }
 
-
-
                 System.out.println(applicantId);
                 // Execute query
                 int rowsInserted = statement.executeUpdate();
@@ -137,7 +145,7 @@ public class ApplicantSignupForm extends VBox {
                     // Insertion successful
                     System.out.println("Applicant signup successful!");
                     this.getChildren().clear();
-                    this.getChildren().addAll(new ApplicantLoginForm(connection,primaryStage));
+                    this.getChildren().addAll(new ApplicantLoginForm(connection, primaryStage));
 
                 } else {
                     // Insertion failed

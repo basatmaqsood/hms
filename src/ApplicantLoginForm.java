@@ -1,3 +1,4 @@
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -22,11 +23,21 @@ public class ApplicantLoginForm extends VBox {
         Label emailLabel = new Label("Email:");
         emailField = new TextField();
 
+
         Label passwordLabel = new Label("Password:");
         passwordField = new PasswordField();
 
+
         loginButton = new Button("Login");
         signupToggleButton = new Button("Sign Up");
+
+        // Set styles
+        setSpacing(10);
+        setAlignment(Pos.CENTER);
+        emailLabel.setStyle("-fx-font-size: 14px;");
+        passwordLabel.setStyle("-fx-font-size: 14px;");
+        loginButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
+        signupToggleButton.setStyle("-fx-background-color: #008CBA; -fx-text-fill: white; -fx-font-size: 14px;");
 
         this.getChildren().addAll(
                 emailLabel, emailField,
@@ -58,8 +69,8 @@ public class ApplicantLoginForm extends VBox {
                     // User authenticated
                     // You can add code here to navigate to the appropriate view
                     System.out.println("Applicant login successful!");
-                    String applicantId =  resultSet.getString("applicant_id");
-                    ApplicantView applicantView = new ApplicantView(connection,applicantId);
+                    String applicantId = resultSet.getString("applicant_id");
+                    ApplicantView applicantView = new ApplicantView(connection, applicantId);
                     primaryStage.setTitle("Applicant Dashboard");
                     primaryStage.setScene(new Scene(applicantView, 800, 600));
 
@@ -84,6 +95,7 @@ public class ApplicantLoginForm extends VBox {
             // You can add code here to switch the view to the signup form
             this.getChildren().clear();
             this.getChildren().addAll(applicantSignupForm);
+            this.setAlignment(Pos.CENTER);
             System.out.println("Switching to signup form...");
         });
     }

@@ -20,8 +20,8 @@ public class Main extends Application {
             Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             // Create login forms
-            ApplicantLoginForm applicantLoginForm = new ApplicantLoginForm(connection,primaryStage);
-            CompanyLoginForm companyLoginForm = new CompanyLoginForm(connection,primaryStage);
+            ApplicantLoginForm applicantLoginForm = new ApplicantLoginForm(connection, primaryStage);
+            CompanyLoginForm companyLoginForm = new CompanyLoginForm(connection, primaryStage);
 
             // Create signup forms
 
@@ -40,25 +40,34 @@ public class Main extends Application {
             VBox loginBox = new VBox(20);
             loginBox.setAlignment(Pos.CENTER);
 
-            // Add action to applicant button
-            applicantButton.setOnAction(event -> {
-                loginBox.getChildren().clear();
-                loginBox.getChildren().addAll(applicantLoginForm);
-            });
+            // Create border pane to hold views and forms
+            BorderPane root = new BorderPane();
+            
+            root.setCenter(toggleBox);
+            root.setBottom(loginBox);
 
             // Add action to company button
+
             companyButton.setOnAction(event -> {
+                root.getChildren().remove(toggleBox);
+                root.getChildren().remove(loginBox);
+                root.setCenter(loginBox);
                 loginBox.getChildren().clear();
                 loginBox.getChildren().addAll(companyLoginForm);
             });
 
-            // Create border pane to hold views and forms
-            BorderPane root = new BorderPane();
-            root.setCenter(toggleBox);
-            root.setBottom(loginBox);
+            // Add action to applicant button
+            applicantButton.setOnAction(event -> {
+                root.getChildren().remove(toggleBox);
+                root.getChildren().remove(loginBox);
+                root.setCenter(loginBox);
+                loginBox.getChildren().clear();
+                loginBox.getChildren().addAll(applicantLoginForm);
+            });
 
             // Set stage title and scene
             Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
             primaryStage.setTitle("Hiring Management System");
             primaryStage.setScene(scene);
 

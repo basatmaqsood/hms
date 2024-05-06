@@ -1,0 +1,70 @@
+.login-form {
+    -fx-spacing: 10px;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+.form-field {
+    -fx-font-size: 14px;
+    -fx-pref-width: 200px;
+}
+
+.form-button {
+    -fx-font-size: 14px;
+    -fx-background-color: #4CAF50; /* Green */
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.form-button:hover {
+    -fx-background-color: #45a049; /* Darker Green */
+}
+.text-input {
+    -fx-max-width: 200px; /* Adjust the value as needed */
+}
+/* Style for labels */
+.label {
+    -fx-font-weight: bold;
+    -fx-padding: 5px;
+}
+
+/* Style for text fields */
+.text-field {
+    -fx-pref-width: 200px; /* Set preferred width */
+    -fx-padding: 5px;
+}
+
+/* Style for password fields */
+.password-field {
+    -fx-pref-width: 200px; /* Set preferred width */
+    -fx-padding: 5px;
+}
+
+/* Style for buttons */
+.button {
+    -fx-background-color: #4CAF50; /* Green background */
+    -fx-text-fill: white; /* White text */
+    -fx-pref-width: 200px; /* Set preferred width */
+    -fx-padding: 5px;
+    -fx-padding-top : 10px;
+}
+
+/* Style for signup button */
+.signup-button {
+    -fx-background-color: #008CBA; /* Blue background */
+}
+
+/* Style for file upload buttons */
+.file-upload-button {
+    -fx-background-color: #555555; /* Dark gray background */
+    -fx-text-fill: white; /* White text */
+}
+
+/* Add more styles as needed */

@@ -1,9 +1,13 @@
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,6 +49,11 @@ public class ApplicantView extends VBox {
 
         // Load available jobs from the database
         loadAvailableJobs();
+
+        // Apply styling
+        this.setSpacing(10);
+        this.setAlignment(Pos.CENTER);
+        jobListLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
     }
 
     // Method to load available jobs from the database
@@ -98,6 +107,7 @@ public class ApplicantView extends VBox {
             e.printStackTrace();
         }
     }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -123,6 +133,12 @@ public class ApplicantView extends VBox {
         pane.add(requirementsLabel, 0, 1);
         pane.add(deadlineLabel, 0, 2);
         pane.add(applyButton, 1, 0, 1, 3); // Span applyButton across multiple rows
+
+        // Apply styling
+        titleLabel.setStyle("-fx-font-weight: bold;");
+        requirementsLabel.setStyle("-fx-font-size: 14px;");
+        deadlineLabel.setStyle("-fx-font-size: 14px;");
+        applyButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
 
         return pane;
     }
@@ -151,17 +167,17 @@ public class ApplicantView extends VBox {
         }
 
         public String getDeadline() {
-        LocalDate deadlineDate;
-        try {
-            deadlineDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        } catch (DateTimeParseException e) {
-            // If parsing fails, try parsing without the time component
-            deadlineDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }
+            LocalDate deadlineDate;
+            try {
+                deadlineDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            } catch (DateTimeParseException e) {
+                // If parsing fails, try parsing without the time component
+                deadlineDate = LocalDate.parse(deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }
 
-        // Format the deadline date without the time component
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return deadlineDate.format(formatter);
+            // Format the deadline date without the time component
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return deadlineDate.format(formatter);
         }
 
         public Button getApplyButton() {

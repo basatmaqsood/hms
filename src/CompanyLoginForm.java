@@ -1,3 +1,4 @@
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -28,6 +29,14 @@ public class CompanyLoginForm extends VBox {
         loginButton = new Button("Login");
         signupToggleButton = new Button("Sign Up");
 
+        // Set styles
+        setSpacing(10);
+        setAlignment(Pos.CENTER);
+        emailLabel.setStyle("-fx-font-size: 14px;");
+        passwordLabel.setStyle("-fx-font-size: 14px;");
+        loginButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
+        signupToggleButton.setStyle("-fx-background-color: #008CBA; -fx-text-fill: white; -fx-font-size: 14px;");
+
         this.getChildren().addAll(
                 emailLabel, emailField,
                 passwordLabel, passwordField,
@@ -49,16 +58,15 @@ public class CompanyLoginForm extends VBox {
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setString(1, email);
                 statement.setString(2, password);
-                
 
                 // Execute query
                 ResultSet resultSet = statement.executeQuery();
-                
+
                 // Check if user exists
                 if (resultSet.next()) {
                     // User authenticated
                     // You can add code here to navigate to the appropriate view
-                    String companyId =  resultSet.getString("company_id");
+                    String companyId = resultSet.getString("company_id");
                     System.out.println("Company login successful!");
                     primaryStage.setTitle("Company Dashboard");
                     primaryStage.setScene(new Scene(new CompanyView(connection, companyId)));
@@ -81,6 +89,7 @@ public class CompanyLoginForm extends VBox {
         signupToggleButton.setOnAction(event -> {
             this.getChildren().clear();
             this.getChildren().addAll(companySignupForm);
+            this.setAlignment(Pos.CENTER);
             System.out.println("Switching to signup form...");
         });
     }

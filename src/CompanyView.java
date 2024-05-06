@@ -1,7 +1,7 @@
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,16 +28,19 @@ public class CompanyView extends VBox {
         applicantListView = new ListView<>();
         loadJobPostings();
         loadApplicants();
+
         // Create form components for posting a job
         Label titleLabel = new Label("Title:");
         titleField = new TextField();
+        titleField.setPrefWidth(300); // Set width for title field
 
         Label descriptionLabel = new Label("Description:");
         descriptionArea = new TextArea();
+        descriptionArea.setPrefWidth(300); // Set width for description area
 
         Label requirementsLabel = new Label("Requirements:");
         requirementsField = new TextField();
-
+        requirementsField.setPrefColumnCount(20); // Adjust the value as needed
         Label deadlineLabel = new Label("Deadline:");
         deadlinePicker = new DatePicker();
 
@@ -63,42 +66,21 @@ public class CompanyView extends VBox {
         getChildren().addAll(jobPostingLabel, jobPostingListView, applicantListView,
                 titleLabel, titleField, descriptionLabel, descriptionArea,
                 requirementsLabel, requirementsField, deadlineLabel, deadlinePicker, postButton);
+
+        // Apply styling
+        setSpacing(10);
+        setPadding(new Insets(10));
+        setAlignment(Pos.CENTER);
+
+        titleLabel.setStyle("-fx-font-weight: bold;");
+        descriptionLabel.setStyle("-fx-font-weight: bold;");
+        requirementsLabel.setStyle("-fx-font-weight: bold;");
+        deadlineLabel.setStyle("-fx-font-weight: bold;");
+        postButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
+        jobPostingLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
     }
 
-    private void postJob() {
-        String title = titleField.getText();
-        String description = descriptionArea.getText();
-        String requirements = requirementsField.getText();
-        String deadline = deadlinePicker.getValue().toString();
-
-        // Insert the job posting into the database
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO Job (posting_id, title, description, requirements, deadline, company_id) " +
-                            "VALUES (job_seq.nextval, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?)");
-            statement.setString(1, title);
-            statement.setString(2, description);
-            statement.setString(3, requirements);
-            statement.setString(4, deadline);
-            statement.setString(5, companyId);
-
-            int rowsInserted = statement.executeUpdate();
-
-            if (rowsInserted > 0) {
-                System.out.println("Job posted successfully!");
-                showAlert("Success", "Job posted successfully!");
-                // Optionally, you can update the job postings list view here
-            } else {
-                System.out.println("Failed to post job.");
-                showAlert("Failure", "There was an error posting the job.");
-            }
-
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+    // Method to load job postings from the database
     private void loadJobPostings() {
         try {
             // Retrieve job postings from the database
@@ -130,7 +112,7 @@ public class CompanyView extends VBox {
         }
     }
 
-    // Modify the loadApplicants method to handle BLOB data retrieval
+    // Method to load applicants from the database
     private void loadApplicants() {
         try {
             // Retrieve applicants from the database
@@ -179,119 +161,155 @@ public class CompanyView extends VBox {
         }
     }
 
-  private void displayApplicantsForJob(JobPosting jobPosting) {
-    try {
-        // Clear previous applicants from the ListView
-        applicantListView.getItems().clear();
+    // Method to post a job
+    private void postJob() {
+        String title = titleField.getText();
+        String description = descriptionArea.getText();
+        String requirements = requirementsField.getText();
+        String deadline = deadlinePicker.getValue().toString();
 
-        // If jobPosting is null, return without performing any further actions
-        if (jobPosting == null) {
-            return;
-        }
+        // Insert the job posting into the database
+        try {
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO Job (posting_id, title, description, requirements, deadline, company_id) " +
+                            "VALUES (job_seq.nextval, ?, ?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?)");
+            statement.setString(1, title);
+            statement.setString(2, description);
+            statement.setString(3, requirements);
+            statement.setString(4, deadline);
+            statement.setString(5, companyId);
 
-        // Prepare SQL statement to retrieve applicants for the given job posting using SQL joins
-        String query = "SELECT a.name, a.email, a.phone, a.skills, a.profile_picture, a.cv " +
-                       "FROM Applicant a " +
-                       "JOIN Application app ON a.applicant_id = app.applicant_id " +
-                       "JOIN Job j ON app.posting_id = j.posting_id " +
-                       "WHERE j.posting_id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        statement.setString(1, jobPosting.getId()); // Assuming job posting id is stored in the JobPosting object
+            int rowsInserted = statement.executeUpdate();
 
-        // Execute query
-        ResultSet resultSet = statement.executeQuery();
-
-        // Create a list to store applicants
-        List<Applicant> applicants = new ArrayList<>();
-
-        // Iterate over the result set and create Applicant objects
-        while (resultSet.next()) {
-            // Retrieve BLOB data as InputStream
-            InputStream profilePictureStream = resultSet.getBinaryStream("profile_picture");
-            InputStream cvStream = resultSet.getBinaryStream("cv");
-
-            // Convert BLOB data to byte arrays or other desired format
-            // For example, you can use Base64 encoding for strings
-            String profilePicture = null;
-            try {
-                profilePicture = encodeBlob(profilePictureStream);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            String cv = null;
-            try {
-                cv = encodeBlob(cvStream);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (rowsInserted > 0) {
+                System.out.println("Job posted successfully!");
+                showAlert("Success", "Job posted successfully!");
+                // Optionally, you can update the job postings list view here
+            } else {
+                System.out.println("Failed to post job.");
+                showAlert("Failure", "There was an error posting the job.");
             }
 
-            // Create Applicant object with BLOB data
-            Applicant applicant = new Applicant(
-                    resultSet.getString("name"),
-                    resultSet.getString("email"),
-                    resultSet.getString("phone"),
-                    resultSet.getString("skills"),
-                    profilePicture,
-                    cv
-            );
-            applicants.add(applicant);
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        // Display applicants in the ListView
-        applicantListView.getItems().addAll(applicants);
-
-        // Close statement and result set
-        statement.close();
-        resultSet.close();
-    } catch (SQLException e) {
-        e.printStackTrace();
     }
-}
 
-// Method to encode BLOB data (e.g., profile picture, CV) to Base64 string
-private String encodeBlob(InputStream inputStream) throws IOException {
-    if (inputStream == null) {
-        return null;
+    // Method to display applicants for a job posting
+    private void displayApplicantsForJob(JobPosting jobPosting) {
+        try {
+            // Clear previous applicants from the ListView
+            applicantListView.getItems().clear();
+
+            // If jobPosting is null, return without performing any further actions
+            if (jobPosting == null) {
+                return;
+            }
+
+            // Prepare SQL statement to retrieve applicants for the given job posting using SQL joins
+            String query = "SELECT a.name, a.email, a.phone, a.skills, a.profile_picture, a.cv " +
+                           "FROM Applicant a " +
+                           "JOIN Application app ON a.applicant_id = app.applicant_id " +
+                           "JOIN Job j ON app.posting_id = j.posting_id " +
+                           "WHERE j.posting_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, jobPosting.getId()); // Assuming job posting id is stored in the JobPosting object
+
+            // Execute query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Create a list to store applicants
+            List<Applicant> applicants = new ArrayList<>();
+
+            // Iterate over the result set and create Applicant objects
+            while (resultSet.next()) {
+                // Retrieve BLOB data as InputStream
+                InputStream profilePictureStream = resultSet.getBinaryStream("profile_picture");
+                InputStream cvStream = resultSet.getBinaryStream("cv");
+
+                // Convert BLOB data to byte arrays or other desired format
+                // For example, you can use Base64 encoding for strings
+                String profilePicture = null;
+                try {
+                    profilePicture = encodeBlob(profilePictureStream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String cv = null;
+                try {
+                    cv = encodeBlob(cvStream);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // Create Applicant object with BLOB data
+                Applicant applicant = new Applicant(
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("skills"),
+                        profilePicture,
+                        cv
+                );
+                applicants.add(applicant);
+            }
+
+            // Display applicants in the ListView
+            applicantListView.getItems().addAll(applicants);
+
+            // Close statement and result set
+            statement.close();
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    byte[] buffer = new byte[4096];
-    int bytesRead;
-    while ((bytesRead = inputStream.read(buffer)) != -1) {
-        outputStream.write(buffer, 0, bytesRead);
+
+    // Method to encode BLOB data (e.g., profile picture, CV) to Base64 string
+    private String encodeBlob(InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            return null;
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        return Base64.getEncoder().encodeToString(outputStream.toByteArray());
     }
-    return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-}
 
-private void displayApplicantDetails(Applicant applicant) {
-    // Create a dialog to display applicant details
-    Dialog<Void> dialog = new Dialog<>();
-    dialog.setTitle("Applicant Details");
-    dialog.setHeaderText("Details for " + applicant.getName());
+    // Method to display details of a selected applicant
+    private void displayApplicantDetails(Applicant applicant) {
+        // Create a dialog to display applicant details
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Applicant Details");
+        dialog.setHeaderText("Details for " + applicant.getName());
 
-    // Create labels to display applicant details
-    Label nameLabel = new Label("Name: " + applicant.getName());
-    Label emailLabel = new Label("Email: " + applicant.getEmail());
-    Label phoneLabel = new Label("Phone: " + applicant.getPhone());
-    Label skillsLabel = new Label("Skills: " + applicant.getSkills());
+        // Create labels to display applicant details
+        Label nameLabel = new Label("Name: " + applicant.getName());
+        Label emailLabel = new Label("Email: " + applicant.getEmail());
+        Label phoneLabel = new Label("Phone: " + applicant.getPhone());
+        Label skillsLabel = new Label("Skills: " + applicant.getSkills());
 
-    // Create a VBox to hold the labels
-    VBox content = new VBox(10);
-    content.getChildren().addAll(nameLabel, emailLabel, phoneLabel, skillsLabel);
-    content.setPadding(new Insets(20));
+        // Create a VBox to hold the labels
+        VBox content = new VBox(10);
+        content.getChildren().addAll(nameLabel, emailLabel, phoneLabel, skillsLabel);
+        content.setPadding(new Insets(20));
 
-    // Set the content of the dialog
-    dialog.getDialogPane().setContent(content);
+        // Set the content of the dialog
+        dialog.getDialogPane().setContent(content);
 
-    // Add OK button to close the dialog
-    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-    dialog.getDialogPane().getButtonTypes().add(okButton);
+        // Add OK button to close the dialog
+        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(okButton);
 
-    // Show the dialog
-    dialog.showAndWait();
-}
+        // Show the dialog
+        dialog.showAndWait();
+    }
 
+    // Method to display an alert
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
