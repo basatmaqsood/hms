@@ -1,7 +1,3 @@
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.util.UUID;
-
 public class JobPosting {
     private String title;
     private String description;
@@ -17,21 +13,20 @@ public class JobPosting {
         this.jobid = jobid;
     }
 
-
-
     public String getId() {
-        // Return the ID of the job posting
         return jobid;
     }
-
-    private String generateJobId() {
-        // Generate a numeric ID from the UUID
-        UUID uuid = UUID.randomUUID();
-        // Remove dashes and convert to BigInteger
-        String uuidStr = uuid.toString().replaceAll("-", "");
-        return new BigInteger(uuidStr, 16).toString();
+    public String getDescription() {
+        return description;
+    }
+    public String gettitle() {
+        return title;
+    }
+    public String getrequirements() {
+        return requirements;
+    }
+    public String getdeadline() {
+        return deadline;
     }
 
-    // Getters and setters
-    // Implement as needed
 }
