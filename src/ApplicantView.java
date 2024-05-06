@@ -88,13 +88,22 @@ public class ApplicantView extends VBox {
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Applied for job successfully!");
+                showAlert("Success", "Applied for job successfully!");
             } else {
                 System.out.println("Failed to apply for job.");
+                showAlert("Failure", "There was an error applying for the job.");
             }
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     // Method to create a GridPane for a job listing
